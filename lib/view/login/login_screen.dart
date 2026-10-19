@@ -112,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 20),
 
                   const Text(
-                    'ISP Telecom Conecta',
+                    'SCTecCom - Conecta',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 22,
