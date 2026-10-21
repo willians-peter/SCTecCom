@@ -1,7 +1,7 @@
 import 'package:path/path.dart' as p;
 import 'package:sqflite/sqflite.dart';
-import 'package:projeto_telecom/data/models/atendimento_model.dart';
-import 'package:projeto_telecom/data/models/chamado_model.dart';
+import 'package:scteccom_app/data/models/atendimento_model.dart';
+import 'package:scteccom_app/data/models/chamado_model.dart';
 
 /// Camada de persistência local SQLite embarcada (RF05)
 class DatabaseHelper {

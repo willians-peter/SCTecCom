@@ -1,8 +1,8 @@
-import 'package:projeto_telecom/utils/location_helper.dart';
-import 'package:projeto_telecom/data/datasources/local/database_helper.dart';
-import 'package:projeto_telecom/data/datasources/remote/api_datasource.dart';
-import 'package:projeto_telecom/data/datasources/remote/secure_storage_datasource.dart';
-import 'package:projeto_telecom/data/models/chamado_model.dart';
+import 'package:scteccom_app/utils/location_helper.dart';
+import 'package:scteccom_app/data/datasources/local/database_helper.dart';
+import 'package:scteccom_app/data/datasources/remote/api_datasource.dart';
+import 'package:scteccom_app/data/datasources/remote/secure_storage_datasource.dart';
+import 'package:scteccom_app/data/models/chamado_model.dart';
 
 /// Repositório de Chamados / Ordens de Serviço (RF04, RF05, RF06, RF07)
 class ChamadoRepository {

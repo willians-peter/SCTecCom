@@ -1,7 +1,7 @@
-import 'package:projeto_telecom/utils/crypto_helper.dart';
-import 'package:projeto_telecom/data/datasources/remote/api_datasource.dart';
-import 'package:projeto_telecom/data/datasources/remote/secure_storage_datasource.dart';
-import 'package:projeto_telecom/data/models/usuario_model.dart';
+import 'package:scteccom_app/utils/crypto_helper.dart';
+import 'package:scteccom_app/data/datasources/remote/api_datasource.dart';
+import 'package:scteccom_app/data/datasources/remote/secure_storage_datasource.dart';
+import 'package:scteccom_app/data/models/usuario_model.dart';
 
 /// Repositório de Autenticação e Gestão de Sessão (RF02, RF03, RF04)
 class AuthRepository {

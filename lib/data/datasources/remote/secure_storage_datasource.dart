@@ -1,6 +1,6 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:projeto_telecom/utils/constants.dart';
-import 'package:projeto_telecom/data/models/usuario_model.dart';
+import 'package:scteccom_app/utils/constants.dart';
+import 'package:scteccom_app/data/models/usuario_model.dart';
 
 /// Datasource de persistência criptografada em flutter_secure_storage (RF02, RF04)
 class SecureStorageDatasource {

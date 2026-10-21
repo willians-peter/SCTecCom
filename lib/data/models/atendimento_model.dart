@@ -1,4 +1,4 @@
-
+// ignore_for_file: prefer_initializing_formals
 /// Modelo  para Atendimentos / Pareceres Técnicos (RF01)
 class AtendimentoModel {
   final int? _id; // ID local autoincrement do SQLite

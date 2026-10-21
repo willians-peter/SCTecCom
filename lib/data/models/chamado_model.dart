@@ -1,4 +1,4 @@
-
+// ignore_for_file: prefer_initializing_formals
 /// Modelo  para Chamados / Ordens de Serviço (RF01)
 class ChamadoModel {
   final int _id;
