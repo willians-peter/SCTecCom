@@ -1,235 +1,152 @@
-import 'package:path/path.dart' as p;
-import 'package:sqflite/sqflite.dart';
+import 'dart:convert';
+import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'package:scteccom_app/utils/constants.dart';
 import 'package:scteccom_app/data/models/atendimento_model.dart';
 import 'package:scteccom_app/data/models/chamado_model.dart';
+import 'package:scteccom_app/data/models/usuario_model.dart';
 
-/// Camada de persistência local SQLite embarcada (RF05)
-class DatabaseHelper {
-  static const String _databaseName = 'isp_telecom.db';
-  static const int _databaseVersion = 1;
 
-  static const String tabelaChamados = 'chamados';
-  static const String tabelaAtendimentos = 'atendimentos';
+/// Datasource Remoto para comunicação com a API REST oficial (RF03, RF04, RF13, RF14)
+class ApiDatasource {
+  final http.Client _client;
+  final String _baseUrl;
 
-  static DatabaseHelper? _instance;
-  Database? _database;
+  ApiDatasource({http.Client? client, String? baseUrl})
+      : _client = client ?? http.Client(),
+        _baseUrl = baseUrl ?? AppConstants.apiBaseUrl;
 
-  DatabaseHelper._internal();
-
-  factory DatabaseHelper() {
-    _instance ??= DatabaseHelper._internal();
-    return _instance!;
-  }
-
-  /// Construtor para testes unitários com Database customizada
-  DatabaseHelper.comDatabase(Database db) {
-    _database = db;
-  }
-
-  Future<Database> get database async {
-    if (_database != null) return _database!;
-    _database = await _initDatabase();
-    return _database!;
-  }
-
-  Future<Database> _initDatabase() async {
-    final dbPath = await getDatabasesPath();
-    final path = p.join(dbPath, _databaseName);
-
-    return await openDatabase(
-      path,
-      version: _databaseVersion,
-      onCreate: _onCreate,
-    );
-  }
-
-  Future<void> _onCreate(Database db, int version) async {
-    // Tabela de chamados atribuídos ao técnico
-    await db.execute('''
-      CREATE TABLE $tabelaChamados (
-        id INTEGER PRIMARY KEY,
-        codigo_cliente TEXT NOT NULL,
-        nome_cliente TEXT NOT NULL,
-        categoria_informada TEXT NOT NULL,
-        descricao_problema TEXT NOT NULL,
-        endereco_cliente TEXT NOT NULL,
-        bairro TEXT,
-        cidade TEXT,
-        latitude REAL,
-        longitude REAL,
-        status TEXT NOT NULL,
-        criado_em TEXT
-      )
-    ''');
-
-    // Tabela de atendimentos/resoluções locais
-    await db.execute('''
-      CREATE TABLE $tabelaAtendimentos (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        chamado_id INTEGER NOT NULL,
-        categoria_tecnico TEXT NOT NULL,
-        descricao_procedimento TEXT NOT NULL,
-        data_resolucao TEXT NOT NULL,
-        foto_caminho_local TEXT,
-        foto_url_remota TEXT,
-        sincronizado INTEGER NOT NULL DEFAULT 0,
-        remote_atendimento_id INTEGER,
-        registrado_em TEXT,
-        FOREIGN KEY (chamado_id) REFERENCES $tabelaChamados (id)
-      )
-    ''');
-  }
-
-  // ==================== OPERAÇÕES DE CHAMADOS ====================
-
-  /// Salva ou atualiza a lista de chamados recebidos da API (Carga Inicial / Sincronização)
-  Future<void> salvarChamados(List<ChamadoModel> chamados) async {
-    final db = await database;
-    final batch = db.batch();
-
-    for (final chamado in chamados) {
-      batch.insert(
-        tabelaChamados,
-        chamado.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
-    }
-
-    await batch.commit(noResult: true);
-  }
-
-  /// Busca todos os chamados com status ativo/aberto no SQLite local (RF06)
-  Future<List<ChamadoModel>> getChamadosAtivos() async {
-    final db = await database;
-    final resultado = await db.query(
-      tabelaChamados,
-      where: 'status = ? OR status = ?',
-      whereArgs: ['ativo', 'aberto'],
-      orderBy: 'id ASC',
-    );
-
-    return resultado.map((map) => ChamadoModel.fromMap(map)).toList();
-  }
-
-  /// Busca um chamado pelo ID
-  Future<ChamadoModel?> getChamadoPorId(int id) async {
-    final db = await database;
-    final resultado = await db.query(
-      tabelaChamados,
-      where: 'id = ?',
-      whereArgs: [id],
-      limit: 1,
-    );
-
-    if (resultado.isNotEmpty) {
-      return ChamadoModel.fromMap(resultado.first);
-    }
-    return null;
-  }
-
-  /// Atualiza o status do chamado no SQLite local (RF12)
-  Future<int> atualizarStatusChamado(int id, String novoStatus) async {
-    final db = await database;
-    return await db.update(
-      tabelaChamados,
-      {'status': novoStatus},
-      where: 'id = ?',
-      whereArgs: [id],
-    );
-  }
-
-  // ==================== OPERAÇÕES DE ATENDIMENTOS ====================
-
-  /// Registra o parecer técnico concluído no SQLite local com sincronizado = 0 (RF12)
-  Future<int> inserirAtendimento(AtendimentoModel atendimento) async {
-    final db = await database;
-    return await db.transaction((txn) async {
-      final idAtendimento = await txn.insert(
-        tabelaAtendimentos,
-        atendimento.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
-
-      // Atualiza o chamado correspondente para 'atendido'
-      await txn.update(
-        tabelaChamados,
-        {'status': 'atendido'},
-        where: 'id = ?',
-        whereArgs: [atendimento.chamadoId],
-      );
-
-      return idAtendimento;
-    });
-  }
-
-  /// Retorna os atendimentos pendentes de envio (sincronizado = 0) (RF13)
-  Future<List<AtendimentoModel>> getAtendimentosPendentes() async {
-    final db = await database;
-    final resultado = await db.query(
-      tabelaAtendimentos,
-      where: 'sincronizado = ?',
-      whereArgs: [0],
-    );
-
-    return resultado.map((map) => AtendimentoModel.fromMap(map)).toList();
-  }
-
-  /// Atualiza o atendimento local para sincronizado = 1 após retorno 201/200 da API (RF13)
-  Future<int> marcarAtendimentoSincronizado({
-    required int idLocal,
-    int? remoteAtendimentoId,
-    String? fotoUrlRemota,
+  /// Autentica o técnico com e-mail e hash HMAC-SHA256 (RF03)
+  /// Retorna um Map com 'token' e o 'usuario' (UsuarioModel)
+  Future<Map<String, dynamic>> login({
+    required String email,
+    required String senhaHmac,
   }) async {
-    final db = await database;
-    final values = <String, dynamic>{
-      'sincronizado': 1,
-    };
-    if (remoteAtendimentoId != null) {
-      values['remote_atendimento_id'] = remoteAtendimentoId;
-    }
-    if (fotoUrlRemota != null) {
-      values['foto_url_remota'] = fotoUrlRemota;
-    }
+    final url = Uri.parse('$_baseUrl/login');
 
-    return await db.update(
-      tabelaAtendimentos,
-      values,
-      where: 'id = ?',
-      whereArgs: [idLocal],
+    final response = await _client.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: jsonEncode({
+        'email': email,
+        'senha_hmac': senhaHmac,
+      }),
     );
+
+    final Map<String, dynamic> body = jsonDecode(response.body);
+
+    if (response.statusCode == 200 && body['sucesso'] == true) {
+      final dados = body['dados'] as Map<String, dynamic>;
+      final token = dados['token'] as String;
+      final usuario = UsuarioModel.fromJson(dados['usuario']);
+
+      return {
+        'token': token,
+        'usuario': usuario,
+      };
+    } else {
+      final mensagem = body['mensagem'] ?? 'Falha na autenticação';
+      throw HttpException(mensagem.toString());
+    }
   }
 
-  /// Lista todos os atendimentos locais com informações do chamado acopladas (RF14)
-  Future<List<AtendimentoModel>> getHistoricoAtendimentos() async {
-    final db = await database;
-    final sql = '''
-      SELECT 
-        a.id,
-        a.chamado_id,
-        a.categoria_tecnico,
-        a.descricao_procedimento,
-        a.data_resolucao,
-        a.foto_caminho_local,
-        a.foto_url_remota,
-        a.sincronizado,
-        a.remote_atendimento_id,
-        a.registrado_em,
-        c.codigo_cliente,
-        c.nome_cliente,
-        c.endereco_cliente
-      FROM $tabelaAtendimentos a
-      LEFT JOIN $tabelaChamados c ON a.chamado_id = c.id
-      ORDER BY a.id DESC
-    ''';
+  /// Busca os chamados ativos atribuídos ao técnico na API (RF04)
+  Future<List<ChamadoModel>> getChamadosAtivos(String token) async {
+    final url = Uri.parse('$_baseUrl/chamados');
 
-    final resultado = await db.rawQuery(sql);
-    return resultado.map((map) => AtendimentoModel.fromMap(map)).toList();
+    final response = await _client.get(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final body = jsonDecode(response.body) as Map<String, dynamic>;
+      final List<dynamic> listaDados = body['dados'] ?? [];
+      return listaDados.map((item) => ChamadoModel.fromJson(item)).toList();
+    } else if (response.statusCode == 401) {
+      throw const HttpException('Sessão expirada. Faça login novamente.');
+    } else {
+      final body = jsonDecode(response.body);
+      final mensagem = body['mensagem'] ?? 'Erro ao buscar chamados na API';
+      throw HttpException(mensagem.toString());
+    }
   }
 
-  /// Limpa todas as tabelas (usado no logout)
-  Future<void> limparBanco() async {
-    final db = await database;
-    await db.delete(tabelaAtendimentos);
-    await db.delete(tabelaChamados);
+  /// Envia o atendimento técnico concluído via Multipart/Form-Data (RF13)
+  Future<Map<String, dynamic>> registrarAtendimento({
+    required String token,
+    required int chamadoId,
+    required String categoriaTecnico,
+    required String descricaoProcedimento,
+    String? dataResolucao,
+    File? fotoArquivo,
+  }) async {
+    final url = Uri.parse('$_baseUrl/atendimento');
+    final request = http.MultipartRequest('POST', url);
+
+    request.headers['Authorization'] = 'Bearer $token';
+    request.headers['Accept'] = 'application/json';
+
+    request.fields['chamado_id'] = chamadoId.toString();
+    request.fields['categoria_tecnico'] = categoriaTecnico;
+    request.fields['descricao_procedimento'] = descricaoProcedimento;
+    if (dataResolucao != null && dataResolucao.isNotEmpty) {
+      request.fields['data_resolucao'] = dataResolucao;
+    }
+
+    if (fotoArquivo != null && fotoArquivo.existsSync()) {
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'foto',
+          fotoArquivo.path,
+        ),
+      );
+    }
+
+    final streamedResponse = await _client.send(request);
+    final response = await http.Response.fromStream(streamedResponse);
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final body = jsonDecode(response.body) as Map<String, dynamic>;
+      return body['dados'] as Map<String, dynamic>? ?? {};
+    } else {
+      try {
+        final body = jsonDecode(response.body);
+        final mensagem = body['mensagem'] ?? 'Erro ao registrar atendimento (${response.statusCode})';
+        throw HttpException(mensagem.toString());
+      } catch (e) {
+        if (e is HttpException) rethrow;
+        throw HttpException('Erro na requisição: ${response.statusCode}');
+      }
+    }
+  }
+
+  /// Busca o histórico de chamados resolvidos pelo técnico na API (RF14)
+  Future<List<AtendimentoModel>> getHistorico(String token) async {
+    final url = Uri.parse('$_baseUrl/historico');
+
+    final response = await _client.get(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final body = jsonDecode(response.body) as Map<String, dynamic>;
+      final List<dynamic> lista = body['dados'] ?? [];
+      return lista.map((item) => AtendimentoModel.fromJson(item)).toList();
+    } else {
+      final body = jsonDecode(response.body);
+      final mensagem = body['mensagem'] ?? 'Erro ao recuperar histórico';
+      throw HttpException(mensagem.toString());
+    }
   }
 }

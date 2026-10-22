@@ -1,8 +1,8 @@
-import 'package:scteccom_app/utils/location_helper.dart';
-import 'package:scteccom_app/data/datasources/local/database_helper.dart';
-import 'package:scteccom_app/data/datasources/remote/api_datasource.dart';
-import 'package:scteccom_app/data/datasources/remote/secure_storage_datasource.dart';
-import 'package:scteccom_app/data/models/chamado_model.dart';
+import '../../utils/location_helper.dart'; // Se o seu location_helper estiver na pasta lib/utils
+import '../datasources/local/database_helper.dart';
+import '../datasources/remote/api_datasource.dart';
+import '../datasources/remote/secure_storage_datasource.dart';
+import '../models/chamado_model.dart';
 
 /// Repositório de Chamados / Ordens de Serviço (RF04, RF05, RF06, RF07)
 class ChamadoRepository {

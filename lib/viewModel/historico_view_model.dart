@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:projeto_telecom/data/models/atendimento_model.dart';
-import 'package:projeto_telecom/data/repositories/atendimento_repository.dart';
+import 'package:scteccom_app/data/models/atendimento_model.dart';
+import 'package:scteccom_app/data/repositories/atendimento_repository.dart';
 
 /// ViewModel para a Tela de Histórico de Atendimentos (RF14, RF15, RF16)
 class HistoricoViewModel extends ChangeNotifier {

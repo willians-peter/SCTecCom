@@ -2,11 +2,11 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:projeto_telecom/data/models/atendimento_model.dart';
-import 'package:projeto_telecom/data/models/chamado_model.dart';
-import 'package:projeto_telecom/data/repositories/atendimento_repository.dart';
-import 'package:projeto_telecom/utils/constants.dart';
-import 'package:projeto_telecom/utils/image_helper.dart';
+import 'package:scteccom_app/data/models/atendimento_model.dart';
+import 'package:scteccom_app/data/models/chamado_model.dart';
+import 'package:scteccom_app/data/repositories/atendimento_repository.dart';
+import 'package:scteccom_app/utils/constants.dart';
+import 'package:scteccom_app/utils/image_helper.dart';
 
 /// ViewModel para a Tela de Atendimento Técnico e Parecer de Conclusão (RF09, RF10, RF11, RF12)
 class AtendimentoViewModel extends ChangeNotifier {

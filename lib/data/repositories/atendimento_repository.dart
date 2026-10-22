@@ -1,8 +1,8 @@
 import 'dart:io';
-import 'package:scteccom_app/data/datasources/local/database_helper.dart';
-import 'package:scteccom_app/data/datasources/remote/api_datasource.dart';
-import 'package:scteccom_app/data/datasources/remote/secure_storage_datasource.dart';
-import 'package:scteccom_app/data/models/atendimento_model.dart';
+import '../datasources/local/database_helper.dart';
+import '../datasources/remote/api_datasource.dart';
+import '../datasources/remote/secure_storage_datasource.dart';
+import '../models/atendimento_model.dart';
 
 /// Repositório de Atendimentos Técnicos e Sincronização em Nuvem (RF12, RF13, RF14, RF15)
 class AtendimentoRepository {
@@ -14,9 +14,9 @@ class AtendimentoRepository {
     DatabaseHelper? databaseHelper,
     ApiDatasource? apiDatasource,
     SecureStorageDatasource? secureStorage,
-  })  : _databaseHelper = databaseHelper ?? DatabaseHelper(),
-        _apiDatasource = apiDatasource ?? ApiDatasource(),
-        _secureStorage = secureStorage ?? SecureStorageDatasource();
+  }) : _databaseHelper = databaseHelper ?? DatabaseHelper(),
+       _apiDatasource = apiDatasource ?? ApiDatasource(),
+       _secureStorage = secureStorage ?? SecureStorageDatasource();
 
   /// Grava o atendimento localmente no SQLite com sincronizado = 0 (RF12)
   Future<int> registrarAtendimentoOffline(AtendimentoModel atendimento) async {
@@ -42,7 +42,8 @@ class AtendimentoRepository {
     for (final item in pendentes) {
       try {
         File? fotoArquivo;
-        if (item.fotoCaminhoLocal != null && item.fotoCaminhoLocal!.isNotEmpty) {
+        if (item.fotoCaminhoLocal != null &&
+            item.fotoCaminhoLocal!.isNotEmpty) {
           final f = File(item.fotoCaminhoLocal!);
           if (f.existsSync()) {
             fotoArquivo = f;
@@ -113,7 +114,10 @@ class AtendimentoRepository {
   }
 
   /// Filtro em tempo real por ID do chamado ou Código do cliente (RF15)
-  List<AtendimentoModel> filtrarHistorico(List<AtendimentoModel> lista, String query) {
+  List<AtendimentoModel> filtrarHistorico(
+    List<AtendimentoModel> lista,
+    String query,
+  ) {
     if (query.trim().isEmpty) return lista;
 
     final q = query.trim().toLowerCase();

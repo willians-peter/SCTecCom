@@ -5,7 +5,7 @@ import 'package:scteccom_app/data/models/chamado_model.dart';
 
 /// Camada de persistência local SQLite embarcada (RF05)
 class DatabaseHelper {
-  static const String _databaseName = 'isp_telecom.db';
+  static const String _databaseName = 'sctec_com.db';
   static const int _databaseVersion = 1;
 
   static const String tabelaChamados = 'chamados';

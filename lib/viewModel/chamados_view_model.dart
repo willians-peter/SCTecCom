@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:projeto_telecom/data/models/chamado_model.dart';
-import 'package:projeto_telecom/data/repositories/chamado_repository.dart';
-import 'package:projeto_telecom/utils/location_helper.dart';
+import 'package:scteccom_app/data/models/chamado_model.dart';
+import 'package:scteccom_app/data/repositories/chamado_repository.dart';
+import 'package:scteccom_app/utils/location_helper.dart';
 
 /// ViewModel de Gestão de Ordens de Serviço (RF06, RF07, RF08)
 class ChamadosViewModel extends ChangeNotifier {

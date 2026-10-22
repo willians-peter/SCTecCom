@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
-import 'package:projeto_telecom/data/repositories/atendimento_repository.dart';
-import 'package:projeto_telecom/utils/constants.dart';
+import 'package:scteccom_app/data/repositories/atendimento_repository.dart';
+import 'package:scteccom_app/utils/constants.dart';
 
 /// ViewModel de Sincronização Automática em Segundo Plano (RF13)
 ///

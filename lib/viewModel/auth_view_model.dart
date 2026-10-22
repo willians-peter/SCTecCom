@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:projeto_telecom/data/models/usuario_model.dart';
-import 'package:projeto_telecom/data/repositories/auth_repository.dart';
+import 'package:scteccom_app/data/models/usuario_model.dart';
+import 'package:scteccom_app/data/repositories/auth_repository.dart';
 
 enum AuthStatus { inicial, carregando, autenticado, naoAutenticado, erro }
 

@@ -1,5 +1,5 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:scteccom_app/utils/constants.dart';
+import '../../../utils/constants.dart'; // Aponta de forma relativa para a pasta utils externa
 import 'package:scteccom_app/data/models/usuario_model.dart';
 
 /// Datasource de persistência criptografada em flutter_secure_storage (RF02, RF04)
