@@ -1,7 +1,7 @@
-import 'package:projeto_telecom/utils/crypto_helper.dart';
-import 'package:projeto_telecom/data/datasources/remote/api_datasource.dart';
-import 'package:projeto_telecom/data/datasources/remote/secure_storage_datasource.dart';
-import 'package:projeto_telecom/data/models/usuario_model.dart';
+import '../../utils/crypto_helper.dart'; // Se o seu crypto_helper estiver na pasta lib/utils
+import '../datasources/remote/api_datasource.dart';
+import '../datasources/remote/secure_storage_datasource.dart';
+import '../models/usuario_model.dart';
 
 /// Repositório de Autenticação e Gestão de Sessão (RF02, RF03, RF04)
 class AuthRepository {

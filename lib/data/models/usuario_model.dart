@@ -1,4 +1,4 @@
-
+// ignore_for_file: prefer_initializing_formals
 /// Modelo fortemente tipado para o Usuário Técnico autenticado (RF01)
 class UsuarioModel {
   final int _id;
