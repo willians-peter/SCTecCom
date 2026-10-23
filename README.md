@@ -10,5 +10,6 @@ git commit -m "mensagem "
 git pull origin main
 
 # 4. Envia o seu trabalho atualizado para o GitHub
+
 git push origin main
 conferindo git main
