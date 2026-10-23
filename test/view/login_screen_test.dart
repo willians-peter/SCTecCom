@@ -28,7 +28,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Verifica títulos e textos
-      expect(find.text('ISP Telecom Conecta'), findsOneWidget);
+      expect(find.text('SCTecCom - Conecta'), findsOneWidget);
       expect(find.text('Autenticação de Técnico de Campo'), findsOneWidget);
       expect(find.text('ENTRAR NO SISTEMA'), findsOneWidget);
 
