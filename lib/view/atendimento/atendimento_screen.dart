@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+
 import '../../data/models/chamado_model.dart';
 import '../../utils/constants.dart';
 import '../../viewModel/atendimento_view_model.dart';
@@ -11,10 +12,7 @@ import '../../viewModel/sync_view_model.dart';
 class AtendimentoScreen extends StatefulWidget {
   final ChamadoModel chamado;
 
-  const AtendimentoScreen({
-    super.key,
-    required this.chamado,
-  });
+  const AtendimentoScreen({super.key, required this.chamado});
 
   @override
   State<AtendimentoScreen> createState() => _AtendimentoScreenState();
@@ -32,7 +30,10 @@ class _AtendimentoScreenState extends State<AtendimentoScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<AtendimentoViewModel>(context, listen: false).resetFormulario();
+      Provider.of<AtendimentoViewModel>(
+        context,
+        listen: false,
+      ).resetFormulario();
     });
   }
 
@@ -43,13 +44,18 @@ class _AtendimentoScreenState extends State<AtendimentoScreen> {
   }
 
   Future<void> _salvarAtendimento() async {
-    final atendimentoVm = Provider.of<AtendimentoViewModel>(context, listen: false);
+    final atendimentoVm = Provider.of<AtendimentoViewModel>(
+      context,
+      listen: false,
+    );
 
     // 1. Validação estrita com GlobalKey<FormState> (RF10)
     if (!_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Por favor, preencha todos os campos obrigatórios corretamente.'),
+          content: Text(
+            'Por favor, preencha todos os campos obrigatórios corretamente.',
+          ),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 3),
         ),
@@ -83,11 +89,16 @@ class _AtendimentoScreenState extends State<AtendimentoScreen> {
 
     if (sucesso) {
       // Atualiza o contador de pendências no SyncViewModel
-      Provider.of<SyncViewModel>(context, listen: false).atualizarContagemPendentes();
+      Provider.of<SyncViewModel>(
+        context,
+        listen: false,
+      ).atualizarContagemPendentes();
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Atendimento gravado com sucesso no dispositivo! (Pendente de sincronização)'),
+          content: Text(
+            'Atendimento gravado com sucesso no dispositivo! (Pendente de sincronização)',
+          ),
           backgroundColor: Colors.green,
           duration: Duration(seconds: 3),
         ),
@@ -96,7 +107,9 @@ class _AtendimentoScreenState extends State<AtendimentoScreen> {
       // Retorna true para a Home remover o chamado da listagem
       Navigator.pop(context, true);
     } else {
-      final erro = atendimentoVm.mensagemErro ?? 'Erro desconhecido ao salvar atendimento.';
+      final erro =
+          atendimentoVm.mensagemErro ??
+          'Erro desconhecido ao salvar atendimento.';
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(erro),
@@ -142,7 +155,10 @@ class _AtendimentoScreenState extends State<AtendimentoScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
                               color: const Color(0xFF003366).withOpacity(0.1),
                               borderRadius: BorderRadius.circular(6),
@@ -156,7 +172,10 @@ class _AtendimentoScreenState extends State<AtendimentoScreen> {
                             ),
                           ),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 3,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.orange.shade50,
                               borderRadius: BorderRadius.circular(6),
@@ -185,7 +204,11 @@ class _AtendimentoScreenState extends State<AtendimentoScreen> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(Icons.place, size: 16, color: Colors.red.shade700),
+                          Icon(
+                            Icons.place,
+                            size: 16,
+                            color: Colors.red.shade700,
+                          ),
                           const SizedBox(width: 4),
                           Expanded(
                             child: Text(
@@ -245,6 +268,7 @@ class _AtendimentoScreenState extends State<AtendimentoScreen> {
 
                       // Categoria Técnica (DropdownButtonFormField - RF09, RF10)
                       DropdownButtonFormField<String>(
+                        isExpanded: true, // ajuste largura total estouro na renderização
                         value: atendimentoVm.categoriaSelecionada,
                         decoration: InputDecoration(
                           labelText: 'Categoria Técnica Constatada *',
@@ -297,7 +321,8 @@ class _AtendimentoScreenState extends State<AtendimentoScreen> {
                           if (valor == null || valor.trim().isEmpty) {
                             return 'Informe a descrição do procedimento.';
                           }
-                          if (valor.trim().length < AppConstants.minDescricaoChars) {
+                          if (valor.trim().length <
+                              AppConstants.minDescricaoChars) {
                             return 'A descrição deve ter no mínimo 10 caracteres válidos.';
                           }
                           return null;
@@ -310,7 +335,10 @@ class _AtendimentoScreenState extends State<AtendimentoScreen> {
                         contentPadding: EdgeInsets.zero,
                         title: const Text(
                           'Sinal Óptico Homologado',
-                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                         subtitle: const Text(
                           'Conexão testada no Power Meter com níveis aceitáveis',
@@ -335,7 +363,10 @@ class _AtendimentoScreenState extends State<AtendimentoScreen> {
                             children: [
                               const Text(
                                 'Atenuação Óptica Medida:',
-                                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                               Text(
                                 '${_nivelSinalDbm.toStringAsFixed(1)} dBm',
@@ -367,11 +398,18 @@ class _AtendimentoScreenState extends State<AtendimentoScreen> {
                       // Data e Hora de Conclusão (RF09)
                       Row(
                         children: [
-                          const Icon(Icons.access_time, size: 18, color: Colors.grey),
+                          const Icon(
+                            Icons.access_time,
+                            size: 18,
+                            color: Colors.grey,
+                          ),
                           const SizedBox(width: 8),
                           Text(
                             'Data de Conclusão: ${atendimentoVm.dataResolucaoFormatada}',
-                            style: const TextStyle(fontSize: 12, color: Colors.black54),
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.black54,
+                            ),
                           ),
                         ],
                       ),
@@ -394,7 +432,11 @@ class _AtendimentoScreenState extends State<AtendimentoScreen> {
                     children: [
                       const Row(
                         children: [
-                          Icon(Icons.photo_camera, size: 20, color: Color(0xFF003366)),
+                          Icon(
+                            Icons.photo_camera,
+                            size: 20,
+                            color: Color(0xFF003366),
+                          ),
                           SizedBox(width: 8),
                           Text(
                             'Foto Comprobatória do Serviço',
@@ -435,7 +477,11 @@ class _AtendimentoScreenState extends State<AtendimentoScreen> {
                                 radius: 18,
                                 child: IconButton(
                                   padding: EdgeInsets.zero,
-                                  icon: const Icon(Icons.delete, color: Colors.white, size: 18),
+                                  icon: const Icon(
+                                    Icons.delete,
+                                    color: Colors.white,
+                                    size: 18,
+                                  ),
                                   onPressed: () => atendimentoVm.removerFoto(),
                                 ),
                               ),
@@ -451,30 +497,36 @@ class _AtendimentoScreenState extends State<AtendimentoScreen> {
                           Expanded(
                             child: OutlinedButton.icon(
                               style: OutlinedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
                               icon: const Icon(Icons.camera_alt),
                               label: const Text('Tirar Foto'),
-                              onPressed: () =>
-                                  atendimentoVm.capturarFoto(ImageSource.camera),
+                              onPressed: () => atendimentoVm.capturarFoto(
+                                ImageSource.camera,
+                              ),
                             ),
                           ),
                           const SizedBox(width: 12),
                           Expanded(
                             child: OutlinedButton.icon(
                               style: OutlinedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
                               icon: const Icon(Icons.photo_library),
                               label: const Text('Galeria'),
-                              onPressed: () =>
-                                  atendimentoVm.capturarFoto(ImageSource.gallery),
+                              onPressed: () => atendimentoVm.capturarFoto(
+                                ImageSource.gallery,
+                              ),
                             ),
                           ),
                         ],
@@ -503,7 +555,9 @@ class _AtendimentoScreenState extends State<AtendimentoScreen> {
                           height: 20,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.white,
+                            ),
                           ),
                         )
                       : const Icon(Icons.check_circle_outline, size: 22),
@@ -517,7 +571,9 @@ class _AtendimentoScreenState extends State<AtendimentoScreen> {
                       letterSpacing: 0.5,
                     ),
                   ),
-                  onPressed: atendimentoVm.isSalvando ? null : _salvarAtendimento,
+                  onPressed: atendimentoVm.isSalvando
+                      ? null
+                      : _salvarAtendimento,
                 ),
               ),
               const SizedBox(height: 24),

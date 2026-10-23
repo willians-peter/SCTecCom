@@ -280,7 +280,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   const SizedBox(height: 20),
                   const Text(
-                    'SENAI - Curso de Desenvolvimento Android com Flutter\nProf. Rafael Aguiar',
+                    'Desenvolvimento Android com Flutter',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 11,

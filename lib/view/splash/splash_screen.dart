@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../viewModel/auth_view_model.dart';
 import '../../viewModel/chamados_view_model.dart';
 
@@ -74,7 +75,7 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
               const SizedBox(height: 28),
               const Text(
-                'ISP TELECOM',
+                'SCTecCom',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 26,
@@ -103,10 +104,7 @@ class _SplashScreenState extends State<SplashScreen> {
               const SizedBox(height: 16),
               const Text(
                 'Verificando credenciais seguras...',
-                style: TextStyle(
-                  color: Colors.white60,
-                  fontSize: 12,
-                ),
+                style: TextStyle(color: Colors.white60, fontSize: 12),
               ),
             ],
           ),
