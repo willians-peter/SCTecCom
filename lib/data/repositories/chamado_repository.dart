@@ -1,4 +1,4 @@
-import '../../utils/location_helper.dart'; // Se o seu location_helper estiver na pasta lib/utils
+import 'package:scteccom_app/utils/location_helper.dart';
 import '../datasources/local/database_helper.dart';
 import '../datasources/remote/api_datasource.dart';
 import '../datasources/remote/secure_storage_datasource.dart';

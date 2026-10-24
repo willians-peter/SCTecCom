@@ -32,7 +32,7 @@ O **SCTecCom** foi concebido para nunca travar ou perder dados por falta de rede
 O projeto segue rigorosamente o padrão **MVVM (Model-View-ViewModel)** em camadas desacopladas e fortemente tipadas:
 
 ```
-projeto_telecom/
+scteccom_app/
 ├── README.md
 ├── pubspec.yaml
 ├── android/
