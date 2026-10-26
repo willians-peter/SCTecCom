@@ -65,7 +65,7 @@ class AuthViewModel extends ChangeNotifier {
       return true;
     } catch (e) {
       _status = AuthStatus.erro;
-      _mensagemErro = e.toString().replaceAll('Exception: ', '').replaceAll('HttpException: ', '');
+      _mensagemErro = e.toString().replaceAll('HttpException: ', '').replaceAll('Exception: ', '');
       notifyListeners();
       return false;
     }
