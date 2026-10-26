@@ -6,7 +6,6 @@ import 'package:scteccom_app/data/models/atendimento_model.dart';
 import 'package:scteccom_app/data/models/chamado_model.dart';
 import 'package:scteccom_app/data/models/usuario_model.dart';
 
-
 /// Datasource Remoto para comunicação com a API REST oficial (RF03, RF04, RF13, RF14)
 class ApiDatasource {
   final http.Client _client;

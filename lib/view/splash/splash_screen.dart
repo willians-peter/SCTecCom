@@ -1,7 +1,6 @@
 // ignore_for_file: deprecated_member_use
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../viewModel/auth_view_model.dart';
 import '../../viewModel/chamados_view_model.dart';
 
